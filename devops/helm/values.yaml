@@ -1,0 +1,92 @@
+backend:
+  image:
+    repository: profiteer-io-backend
+    tag: latest
+    pullPolicy: Never
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  api_key: "OPEN_SESAME"
+
+mindsdb:
+  image:
+    repository: mindsdb/mindsdb
+    tag: lightwood
+    pullPolicy: IfNotPresent
+
+  apis: "http,postgres"
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+postgresql:
+  auth:
+    username: mindsdb
+    password: mindsdb
+    database: mindsdb
+  primary:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  architecture: standalone
+  fullnameOverride: postgresql
+
+airbyte:
+  global:
+    workloadType: full
+    jobs:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+
+        limits:
+          cpu: 100m
+          memory: 1Gi
+  server:
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "300m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+  webapp:
+    resources:
+      requests:
+        memory: "200Mi"
+        cpu: "150m"
+      limits:
+        memory: "400Mi"
+        cpu: "300m"
+  db:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "400m"
+  temporal:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "400m"

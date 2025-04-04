@@ -1,0 +1,9 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.5.0
+- name: airbyte
+  repository: https://airbytehq.github.io/helm-charts
+  version: 1.5.1
+digest: sha256:250b6ac494588e36d18b04340f92696b2a7101fe887d077e3d3844bc68f53095
+generated: "2025-04-04T14:44:26.0397711+05:30"

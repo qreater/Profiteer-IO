@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.4.2
+    hooks:
+    -   id: insert-license
+        name: "Insert license header in Python source files"
+        files: \.py$
+        args:
+            - --license-filepath
+            - backend/.header-config.txt
+            - --comment-style
+            - '"""||"""'
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
+    hooks:
+      - id: black
+        args: ["--line-length", "88"]

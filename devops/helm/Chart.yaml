@@ -1,0 +1,15 @@
+apiVersion: v2
+name: ProfiteerIO
+description: Helm Chart for ProfiteerIO, The Sales Forecasting Tool
+
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+
+dependencies:
+  - name: postgresql
+    version: 16.5.0
+    repository: https://charts.bitnami.com/bitnami
+  - name: airbyte
+    version: 1.5.1
+    repository: https://airbytehq.github.io/helm-charts

@@ -1,0 +1,26 @@
+FROM python:3.12-slim
+
+ENV POETRY_VERSION=1.6.1 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+
+WORKDIR /app
+
+COPY ../backend/pyproject.toml ../backend/poetry.lock* ../backend/main.py /app/ 
+RUN poetry install --no-root --no-dev --no-interaction --no-ansi
+
+COPY ../backend /app
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

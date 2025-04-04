@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mindsdb
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-mindsdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mindsdb
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mindsdb
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-mindsdb
+          image: "{{ .Values.mindsdb.image.repository }}:{{ .Values.mindsdb.image.tag }}"
+          imagePullPolicy: {{ .Values.mindsdb.image.pullPolicy }}
+          ports:
+            - containerPort: 47334
+            - containerPort: 47335
+          env:
+            - name: MINDSDB_APIS
+              value: "{{ .Values.mindsdb.apis }}"
+          resources: {{ toYaml .Values.mindsdb.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mindsdb
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-mindsdb
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-mindsdb
+  ports:
+    - name: http
+      port: 47334
+      targetPort: 47334
+    - name: postgres
+      port: 47335
+      targetPort: 47335
