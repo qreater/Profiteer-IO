@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/sales",
+    "/",
     response_model=SalesResponse,
     status_code=status.HTTP_200_OK,
     response_model_exclude_none=True,

@@ -30,22 +30,25 @@ def generate_timestamp(hours_ago: int) -> str:
         str: The ISO formatted timestamp.
     """
     now = datetime.utcnow()
-    return (now - timedelta(hours=hours_ago)).isoformat()
+    target_time = now - timedelta(hours=hours_ago)
+    start_of_hour = target_time.replace(minute=0, second=0, microsecond=0)
+    return start_of_hour.isoformat()
 
 
 def calculate_popularity_factor(category_popularity: float, rating: float) -> float:
     """
-    Calculate the popularity factor based on category popularity, rating, and a random device popularity multiplier.
+    Calculate the popularity factor based on category popularity, rating, and device popularity.
 
     Args:
         category_popularity (float): The popularity of the product category, ranging from 0 to 1.
-        rating (float): The rating of the product, ranging from 3.0 to 5.0.
+        rating (float): The rating of the product, ranging from 2.0 to 5.0.
 
     Returns:
         float: The computed popularity factor.
     """
-    device_popularity = random.uniform(0.9, 1.1)  # reduced range for stability
-    return category_popularity * (rating / 5) * device_popularity
+    device_popularity = random.uniform(0.95, 1.05) * category_popularity
+    rating_factor = ((rating - 2) / 3) ** 0.9 * 1.8
+    return category_popularity * rating_factor * device_popularity
 
 
 def determine_price(product: Any) -> float:
@@ -59,17 +62,15 @@ def determine_price(product: Any) -> float:
         float: The determined price for the product.
     """
     if product.price_strategy == "aggressive":
-        return round(random.uniform(product.min_price, product.max_price), 2)
+        price = random.uniform(product.base_price * 0.85, product.base_price * 1.05)
+        return round(max(product.min_price, min(product.max_price, price)), 2)
     elif product.price_strategy == "moderate":
-        price = round(
-            random.gauss(
-                product.base_price, (product.max_price - product.min_price) / 6
-            ),
-            2,
-        )
-        return max(product.min_price, min(price, product.max_price))
+        std_dev = product.base_price * 0.05
+        price = random.gauss(product.base_price, std_dev)
+        return round(max(product.min_price, min(product.max_price, price)), 2)
     else:
-        return round(random.uniform(product.min_price, product.max_price), 2)
+        price = random.uniform(product.base_price * 0.9, product.base_price * 1.1)
+        return round(max(product.min_price, min(product.max_price, price)), 2)
 
 
 def assign_initial_base_views(products: List[ProductMeta]) -> Dict[str, int]:
@@ -84,7 +85,7 @@ def assign_initial_base_views(products: List[ProductMeta]) -> Dict[str, int]:
     """
     base_views_map = {}
     for product in products:
-        base_views_map[product.product_id] = random.randint(20_000, 50_000)
+        base_views_map[product.product_id] = random.randint(8_000, 12_000)
     return base_views_map
 
 
@@ -107,25 +108,25 @@ def calculate_views(
         int: The estimated number of views.
     """
     hour = datetime.fromisoformat(timestamp).hour
-    base_views = base_views_map.get(product_id, 30_000)
+    base_views = base_views_map.get(product_id, 10_000)
 
     if 0 <= hour < 6:
-        time_factor = 0.3
+        time_factor = 0.5
     elif 6 <= hour < 10:
-        time_factor = 0.7
+        time_factor = 0.8
     elif 10 <= hour < 18:
-        time_factor = 1.2
+        time_factor = 1.5
     else:
-        time_factor = 0.7
+        time_factor = 1.0
 
     adjusted_views = base_views * popularity_factor * time_factor
 
-    return max(5_000, int(adjusted_views))
+    return max(100, int(adjusted_views))
 
 
 def calculate_cart_adds(views: int, rating: float) -> int:
     """
-    Calculate the number of times a product is added to the cart based on views and rating.
+    Calculate the number of cart additions based on views and rating.
 
     Args:
         views (int): The number of views the product received.
@@ -134,7 +135,10 @@ def calculate_cart_adds(views: int, rating: float) -> int:
     Returns:
         int: The estimated number of cart additions.
     """
-    return max(1, int(views * random.uniform(0.02, 0.08) * (rating / 5)))
+    rating_factor = ((rating - 2) / 3) ** 0.9 * 1.8
+    conversion_rate = random.uniform(0.045, 0.055) * rating_factor
+
+    return max(1, int(views * conversion_rate))
 
 
 def calculate_purchases(cart_adds: int, price: float, product: ProductMeta) -> int:
@@ -149,10 +153,10 @@ def calculate_purchases(cart_adds: int, price: float, product: ProductMeta) -> i
     Returns:
         int: The estimated number of purchases.
     """
-    price_sensitivity = max(1e-6, (product.max_price - product.min_price) / 3)
+    price_sensitivity = product.base_price * 0.1
     price_diff = (price - product.base_price) / price_sensitivity
-    demand_factor = 1 / (1 + math.exp(3.0 * price_diff))
-    conversion_rate = random.uniform(0.05, 0.25) * demand_factor
+    demand_factor = 1 / (1 + math.exp(2.0 * price_diff))
+    conversion_rate = random.uniform(0.16, 0.19) * demand_factor
     return max(1, int(cart_adds * conversion_rate))
 
 
@@ -179,25 +183,23 @@ def generate_sales_data(data: SalesRequest) -> List[Dict[str, Any]]:
             if product.product_id not in _rating_memory:
                 if hasattr(product, "base_rating") and product.base_rating:
                     _rating_memory[product.product_id] = round(
-                        min(5.0, max(3.0, product.base_rating)), 1
+                        min(5.0, max(2.0, product.base_rating)), 1
                     )
                 else:
                     _rating_memory[product.product_id] = round(
-                        random.uniform(3.5, 4.5), 1
+                        random.uniform(2.0, 5), 1
                     )
 
             if random.random() < 0.1:
-                delta = random.uniform(-0.1, 0.1)
+                delta = random.uniform(-0.2, 0.2)
                 new_rating = _rating_memory[product.product_id] + delta
                 _rating_memory[product.product_id] = round(
-                    min(5.0, max(3.0, new_rating)), 1
+                    min(5.0, max(2.0, new_rating)), 1
                 )
 
             rating = _rating_memory[product.product_id]
 
-            category_popularity = (
-                float(CategoryPopularity[product.category.name].value) / 5
-            )
+            category_popularity = float(CategoryPopularity[product.category.name].value)
             popularity_factor = calculate_popularity_factor(category_popularity, rating)
             price = determine_price(product)
             views = calculate_views(
@@ -205,6 +207,15 @@ def generate_sales_data(data: SalesRequest) -> List[Dict[str, Any]]:
             )
             cart_adds = calculate_cart_adds(views, rating)
             purchases = calculate_purchases(cart_adds, price, product)
+            time_of_day_bucket = (
+                "Overnight"
+                if 0 <= datetime.fromisoformat(timestamp).hour < 6
+                else "Morning"
+                if 6 <= datetime.fromisoformat(timestamp).hour < 10
+                else "Afternoon"
+                if 10 <= datetime.fromisoformat(timestamp).hour < 18
+                else "Evening"
+            )
 
             sales_data.append(
                 {
@@ -213,7 +224,12 @@ def generate_sales_data(data: SalesRequest) -> List[Dict[str, Any]]:
                     "product_name": product.product_name,
                     "product_image": product.product_image,
                     "category": product.category,
+                    "category_popularity": category_popularity,
+                    "base_price": product.base_price,
                     "current_price": price,
+                    "price_strategy": product.price_strategy,
+                    "popularity_factor": round(popularity_factor, 2),
+                    "time_of_day_bucket": time_of_day_bucket,
                     "views": views,
                     "cart_adds": cart_adds,
                     "purchases": purchases,
