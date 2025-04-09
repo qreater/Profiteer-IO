@@ -27,10 +27,10 @@ class CategoryPopularity(str, Enum):
     Enum for category popularity.
     """
 
-    LAPTOPS = 5
-    PC = 3
-    CONSOLES = 4
-    DEFAULT = 3
+    LAPTOPS = 1.1
+    PC = 1.0
+    CONSOLES = 0.9
+    DEFAULT = 1.0
 
 
 class ProductPriceStrategy(str, Enum):
@@ -71,7 +71,7 @@ class ProductMeta(ProductBase):
     """
 
     base_price: float
-    base_rating: float = Field(4.2, ge=3.0, le=5.0)
+    base_rating: float = Field(4.2, ge=2.0, le=5.0)
     price_strategy: ProductPriceStrategy = ProductPriceStrategy.RANDOM
     min_price: float
     max_price: float
@@ -95,8 +95,13 @@ class ProductSales(ProductBase):
     Model for product sales data.
     """
 
+    category_popularity: float
     rating: float
+    base_price: float
     current_price: float
+    price_strategy: ProductPriceStrategy
+    popularity_factor: float
+    time_of_day_bucket: str
     timestamp: str
     views: int
     cart_adds: int

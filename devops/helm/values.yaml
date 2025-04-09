@@ -24,11 +24,11 @@ mindsdb:
 
   resources:
     requests:
-      memory: "512Mi"
+      memory: "2Gi"
       cpu: "300m"
     limits:
-      memory: "1Gi"
-      cpu: "500m"
+      memory: "3Gi"
+      cpu: "2"
 
 postgresql:
   auth:
