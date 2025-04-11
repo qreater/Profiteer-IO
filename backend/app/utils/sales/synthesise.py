@@ -19,20 +19,21 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
 
-def generate_timestamp(hours_ago: int) -> str:
+def generate_timestamp(hour_offset: int) -> str:
     """
-    Generate an ISO formatted timestamp for a given number of hours ago.
+    Generate a timestamp in ISO format based on the current time and an hour offset.
 
     Args:
-        hours_ago (int): The number of hours ago for which to generate the timestamp.
+        hour_offset (int): The number of hours to offset from the current time.
 
     Returns:
         str: The ISO formatted timestamp.
     """
-    now = datetime.utcnow()
-    target_time = now - timedelta(hours=hours_ago)
-    start_of_hour = target_time.replace(minute=0, second=0, microsecond=0)
-    return start_of_hour.isoformat()
+    base = datetime.now().replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) - timedelta(days=2)
+    timestamp = base + timedelta(hours=hour_offset)
+    return timestamp.isoformat()
 
 
 def calculate_popularity_factor(category_popularity: float, rating: float) -> float:

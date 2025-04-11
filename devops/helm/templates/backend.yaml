@@ -20,14 +20,11 @@ spec:
           ports:
             - containerPort: 8000
           resources: {{ toYaml .Values.backend.resources | nindent 12 }}
-          volumeMounts:
-            - name: config-volume
-              mountPath: /app/config.yaml
-              subPath: config.yaml
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ .Release.Name }}-cm
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-cm
+            - secretRef:
+                name: {{ .Release.Name }}-secrets
 ---
 apiVersion: v1
 kind: Service
@@ -51,5 +48,18 @@ metadata:
   name: {{ .Release.Name }}-cm
   namespace: {{ .Release.Namespace }}
 data:
-  config.yaml: |
-    API_KEY: {{ .Values.backend.api_key | quote }}
+  DB_NAME: {{ .Values.postgresql.auth.database | quote }}
+  DB_HOST: postgresql.{{ .Release.Namespace }}
+  DB_PORT: {{ .Values.postgresql.primary.service.port | default 5432 | quote }}
+  TABLE_NAME: {{ .Values.backend.table_name | quote }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-secrets
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  API_KEY: {{ .Values.backend.api_key | b64enc | quote }}
+  DB_USER: {{ .Values.postgresql.auth.username | b64enc | quote }}
+  DB_PASSWORD: {{ .Values.postgresql.auth.password | b64enc | quote }}
