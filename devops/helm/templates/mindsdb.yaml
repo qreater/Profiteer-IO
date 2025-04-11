@@ -26,6 +26,13 @@ spec:
             - name: MINDSDB_APIS
               value: "{{ .Values.mindsdb.apis }}"
           resources: {{ toYaml .Values.mindsdb.resources | nindent 12 }}
+          volumeMounts:
+            - name: mindsdb-storage
+              mountPath: /root/mdb_storage
+      volumes:
+        - name: mindsdb-storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-mindsdb-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -45,3 +52,35 @@ spec:
     - name: postgres
       port: 47335
       targetPort: 47335
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-mindsdb-pv
+  labels:
+    app: {{ .Release.Name }}-mindsdb
+spec:
+  capacity:
+    storage: {{ .Values.mindsdb.storage.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  hostPath:
+    path: "/data/{{ .Release.Name }}/mindsdb"
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-mindsdb-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-mindsdb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: {{ .Values.mindsdb.storage.size }}
+  volumeName: {{ .Release.Name }}-mindsdb-pv

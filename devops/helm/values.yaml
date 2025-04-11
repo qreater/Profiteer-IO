@@ -13,6 +13,7 @@ backend:
       cpu: "500m"
 
   api_key: "OPEN_SESAME"
+  table_name: "Sales_Data"
 
 mindsdb:
   image:
@@ -29,6 +30,9 @@ mindsdb:
     limits:
       memory: "3Gi"
       cpu: "2"
+    
+  storage:
+    size: 5Gi
 
 postgresql:
   auth:

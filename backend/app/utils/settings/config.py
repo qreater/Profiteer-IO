@@ -16,9 +16,29 @@ class Settings(BaseSettings):
     -- Parameters
     API_KEY: str
         The API key to access the API.
+    DB_NAME: str
+        The name of the database.
+    DB_USER: str
+        The database user.
+    DB_PASSWORD: str
+        The database password.
+    DB_HOST: str
+        The database host.
+    DB_PORT: str
+        The database port.
+    TABLE_NAME: str
+        The name of the table to store the data.
     """
 
     API_KEY: str = "OPEN_SESAME"
+
+    DB_NAME: str = "datastore"
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = "postgres"
+    DB_HOST: str = "127.0.0.1"
+    DB_PORT: str = "5432"
+
+    TABLE_NAME: str = "datastore"
 
 
 settings = Settings()
