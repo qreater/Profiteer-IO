@@ -28,6 +28,8 @@ class Settings(BaseSettings):
         The database port.
     TABLE_NAME: str
         The name of the table to store the data.
+    MINDSDB_URL: str
+        The URL of the MindsDB instance.
     """
 
     API_KEY: str = "OPEN_SESAME"
@@ -37,8 +39,9 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = "postgres"
     DB_HOST: str = "127.0.0.1"
     DB_PORT: str = "5432"
-
     TABLE_NAME: str = "datastore"
+
+    MINDSDB_URL: str = "http://127.0.0.1:47334"
 
 
 settings = Settings()
