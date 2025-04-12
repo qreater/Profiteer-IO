@@ -26,7 +26,7 @@ def get_dashboard():
     Fetches the dashboard data.
 
     Returns:
-        dict: A dictionary containing the dashboard data.
+        DashboardResponse: A response model containing the dashboard data.
     """
     dashboard_data = get_dashboard_data()
     return {"message": "Dashboard Data fetched successfully.", "data": dashboard_data}
