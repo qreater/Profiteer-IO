@@ -1,0 +1,55 @@
+name: PR Tests
+
+on:
+  push:
+    branches:
+      - main
+      - feature/**
+      - bugfix/**
+    paths:
+      - 'backend/**'
+      - 'devops/Dockerfile.backend'
+      - '.github/workflows/pr-tests.yaml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'devops/Dockerfile.backend'
+      - '.github/workflows/pr-tests.yaml'
+
+jobs:
+  backend-style:
+    runs-on: ubuntu-latest
+    name: Run Backend Pre-Commit
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Run pre-commit in backend
+        run: |
+          cd backend
+          pip install pre-commit
+          pre-commit run --all-files
+
+  backend-docker-build:
+    runs-on: ubuntu-latest
+    name: Build Backend Docker Image
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Dockerfile.backend
+        run: |
+          cd devops
+          docker build -f Dockerfile.backend ..
