@@ -27,7 +27,7 @@ def generate_sales(data: SalesRequest):
         data (SalesRequest): The request data containing the number of hours and product details.
 
     Returns:
-        list: A list of dictionaries containing sales data for each product.
+        SalesResponse: A response model containing the generated sales data.
     """
     sales_data = generate_sales_data(data)
     return {
