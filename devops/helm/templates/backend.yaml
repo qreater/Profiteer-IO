@@ -52,6 +52,7 @@ data:
   DB_HOST: postgresql.{{ .Release.Namespace }}
   DB_PORT: {{ .Values.postgresql.primary.service.port | default 5432 | quote }}
   TABLE_NAME: {{ .Values.backend.table_name | quote }}
+  MINDSDB_URL: {{ .Values.backend.mindsdb_url | default (printf "http://%s-mindsdb.%s:47334" .Release.Name .Release.Namespace) | quote }}
 ---
 apiVersion: v1
 kind: Secret

@@ -14,6 +14,7 @@ backend:
 
   api_key: "OPEN_SESAME"
   table_name: "Sales_Data"
+  mindsdb_url: ""
 
 mindsdb:
   image:
