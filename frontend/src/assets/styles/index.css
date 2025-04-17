@@ -1,0 +1,111 @@
+/* === Import Font === */
+
+@import url('https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@300;400;700&display=swap');
+
+/* === CSS Variables === */
+
+:root {
+    --color-background: #121212;
+    --color-background-light: #1E1E1E;
+    --color-base: #f2f2f2;
+    --color-muted: #b0b0b0;
+    --color-accent: #1F6FEB;
+    --color-success: #12b76a;
+    --color-error: #ef4444;
+
+    --font-body: 'Sulphur Point', sans-serif;
+
+    --font-size-xl: 2.25rem;
+    --font-size-lg: 1.55rem;
+    --font-size-md: 1.15rem;
+    --font-size-base: 1rem;
+}
+
+/* === Simple CSS Reset === */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+  
+body {
+    height: 100%;
+    font-family: var(--font-body);
+    line-height: 1.6;
+    background-color: var(--color-background);
+    color: var(--color-base);
+}
+
+html, body {
+    touch-action: pan-y;
+
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}
+  
+
+/* === Typography === */
+
+.focus-text {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    line-height: 1.2;
+}
+  
+h1 {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-base);
+    user-select: none;
+}
+  
+h2 {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--color-base);
+}
+  
+p, .muted-text {
+    font-size: var(--font-size-md);
+    font-weight: 400;
+    color: var(--color-muted);
+}
+  
+/* === Utility Color Classes === */
+  
+.text-accent {
+    color: var(--color-accent);
+}
+  
+.text-success {
+    color: var(--color-success);
+}
+  
+.text-error {
+    color: var(--color-error);
+}
