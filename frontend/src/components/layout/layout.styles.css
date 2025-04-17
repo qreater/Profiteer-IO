@@ -1,0 +1,36 @@
+.layout {
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+    grid-template-areas: "navbar content";
+    grid-template-columns: 10rem 1fr;
+    background-color: var(--color-bg);
+
+
+    @media only screen and (max-width: 1300px) {
+        grid-template-areas: 
+            "content"
+            "navbar";
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 8rem;
+    }
+}
+
+.layout__children {
+    grid-area: content;
+    padding: 1rem;
+    justify-self: center;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    width: 100%;
+    max-width: 90rem;
+
+    @media only screen and (max-width: 1300px) {
+        padding: 1rem;
+        height: calc(100vh - 8rem);
+        width: 95%;
+    }
+}
