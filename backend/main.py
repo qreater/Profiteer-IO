@@ -8,8 +8,10 @@
 
 import logging
 import logging.config
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.utils.exceptions.errors import APIError
 from app.utils.exceptions.logger import get_log_config
@@ -24,6 +26,8 @@ app = FastAPI(
 )
 
 logging.config.dictConfig(get_log_config())
+
+app.mount("/cdn-assets/", StaticFiles(directory="app/static/"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
