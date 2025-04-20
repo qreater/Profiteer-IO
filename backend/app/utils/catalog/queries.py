@@ -88,9 +88,25 @@ product_graph AS (
   WHERE DATE(timestamp) = (SELECT sale_date FROM latest_day)
     AND product_id = %s
   ORDER BY timestamp
+),
+
+bucket_averages AS (
+  SELECT
+    time_of_day_bucket,
+    ROUND(AVG(purchases), 2) AS average_purchases
+  FROM public."{settings.TABLE_NAME}"
+  WHERE DATE(timestamp) = (SELECT sale_date FROM latest_day)
+    AND product_id = %s
+  GROUP BY time_of_day_bucket
+),
+
+bucket_averages_json AS (
+  SELECT json_object_agg(time_of_day_bucket, average_purchases) AS average_purchases
+  FROM bucket_averages
 )
 
 SELECT 
   (SELECT row_to_json(product_details) FROM product_details) AS details,
-  (SELECT json_agg(product_graph) FROM product_graph) AS graph;
+  (SELECT json_agg(product_graph) FROM product_graph) AS graph,
+  (SELECT average_purchases FROM bucket_averages_json) AS average_purchases;
 """

@@ -56,6 +56,7 @@ class ProductSpecifics(BaseModel):
 
     details: ProductExtension
     graph: List[ProductGraphItem]
+    average_purchases: Dict[str, float]
 
 
 class ProductResponse(ReadResponse[ProductSpecifics]):

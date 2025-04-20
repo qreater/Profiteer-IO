@@ -90,6 +90,27 @@ def assign_initial_base_views(products: List[ProductMeta]) -> Dict[str, int]:
     return base_views_map
 
 
+def get_time_of_day_bucket(hour: int) -> str:
+    """
+    Get the time of day bucket based on the hour.
+
+    Args:
+        hour (int): The hour of the day (0-23).
+
+    Returns:
+        str: The time of day bucket ("Overnight", "Morning", "Afternoon", "Evening").
+    """
+
+    if 22 <= hour or hour < 6:
+        return "Overnight"
+    elif 6 <= hour < 12:
+        return "Morning"
+    elif 12 <= hour < 18:
+        return "Afternoon"
+    else:
+        return "Evening"
+
+
 def calculate_views(
     product_id: str,
     base_views_map: Dict[str, int],
@@ -111,11 +132,13 @@ def calculate_views(
     hour = datetime.fromisoformat(timestamp).hour
     base_views = base_views_map.get(product_id, 10_000)
 
-    if 0 <= hour < 6:
+    time_of_day_bucket = get_time_of_day_bucket(hour)
+
+    if time_of_day_bucket == "Overnight":
         time_factor = 0.5
-    elif 6 <= hour < 10:
+    elif time_of_day_bucket == "Morning":
         time_factor = 0.8
-    elif 10 <= hour < 18:
+    elif time_of_day_bucket == "Afternoon":
         time_factor = 1.5
     else:
         time_factor = 1.0
@@ -208,15 +231,8 @@ def generate_sales_data(data: SalesRequest) -> List[Dict[str, Any]]:
             )
             cart_adds = calculate_cart_adds(views, rating)
             purchases = calculate_purchases(cart_adds, price, product)
-            time_of_day_bucket = (
-                "Overnight"
-                if 0 <= datetime.fromisoformat(timestamp).hour < 6
-                else "Morning"
-                if 6 <= datetime.fromisoformat(timestamp).hour < 10
-                else "Afternoon"
-                if 10 <= datetime.fromisoformat(timestamp).hour < 18
-                else "Evening"
-            )
+            hour = datetime.fromisoformat(timestamp).hour
+            time_of_day_bucket = get_time_of_day_bucket(hour)
 
             sales_data.append(
                 {

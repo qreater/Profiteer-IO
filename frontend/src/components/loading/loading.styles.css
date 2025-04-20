@@ -16,7 +16,7 @@
     opacity: 0.1;
 
     animation: pulseGlowScale 3s ease-in-out infinite;
-    animation-delay: 0.5s;
+    animation-delay: 0.3s;
 
     user-select: none;
     filter: drop-shadow(0 0 1rem rgba(128, 0, 255, 0.4));

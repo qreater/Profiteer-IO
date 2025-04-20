@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-frontend
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-frontend
+    spec:
+      containers:
+        - name: nginx
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-frontend-cm
+            - secretRef:
+                name: {{ .Release.Name }}-frontend-secrets
+          resources: {{ toYaml .Values.frontend.resources | nindent 12 }}
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ .Release.Name }}-nginx-config
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-frontend
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: {{ .Release.Name }}-frontend
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-frontend-cm
+  namespace: {{ .Release.Namespace }}
+data:
+  VITE_API_URL: {{ printf "http://%s-backend.%s:8000" .Release.Name .Release.Namespace | quote }}
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-frontend-secrets
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  VITE_API_KEY: {{ .Values.backend.api_key | b64enc | quote }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-nginx-config
+  namespace: {{ .Release.Namespace }}
+data:
+  nginx.conf: |
+    worker_processes 1;
+
+    events { worker_connections 1024; }
+
+    http {
+      include       mime.types;
+      default_type  application/octet-stream;
+      sendfile        on;
+
+      server {
+        listen 80;
+
+        location /cdn-assets/ {
+          proxy_pass http://{{ .Release.Name }}-backend.{{ .Release.Namespace }}:8000/cdn-assets/;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location /api/ {
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_set_header content_type "application/json";
+
+          add_header Access-Control-Allow-Origin *;
+          add_header Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE";
+          add_header Access-Control-Allow-Headers "Authorization";
+
+          proxy_set_header Authorization $http_authorization;
+
+          proxy_pass_request_headers on;
+          proxy_http_version 1.1;
+          proxy_request_buffering off;
+          proxy_buffering off;
+
+          proxy_read_timeout 180s;
+          proxy_connect_timeout 180s;
+          proxy_send_timeout 180s;
+          send_timeout 180s;
+
+          proxy_pass http://{{ .Release.Name }}-backend.{{ .Release.Namespace }}:8000;
+        }
+
+        location / {
+          root /usr/share/nginx/html;
+          index index.html;
+          try_files $uri /index.html;
+        }
+      }
+    }

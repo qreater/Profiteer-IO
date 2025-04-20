@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+export const isDev = import.meta.env.DEV
+
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: isDev ? import.meta.env.VITE_API_URL : '',
     headers: {
         'Content-Type': 'application/json',
         Authorization: import.meta.env.VITE_API_KEY,

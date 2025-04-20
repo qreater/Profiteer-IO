@@ -41,7 +41,9 @@ def get_product(product_id: str) -> dict:
     """
 
     product = data_store.execute_query(
-        GET_PRODUCT_BY_ID_QUERY, params=(product_id, product_id), mode="retrieve"
+        GET_PRODUCT_BY_ID_QUERY,
+        params=(product_id, product_id, product_id),
+        mode="retrieve",
     )["response"][0]
 
     if not product.get("details"):

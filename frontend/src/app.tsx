@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import Layout from './components/layout/layout'
 import Dashboard from './containers/dashboard/dashboard'
 import Catalog from './containers/catalog/catalog'
+import Analytics from './containers/analytics/analytics'
 
 const App: React.FC = () => {
     return (
@@ -15,6 +16,10 @@ const App: React.FC = () => {
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/catalog" element={<Catalog />} />
+                        <Route
+                            path="/prediction/:productId?"
+                            element={<Analytics />}
+                        />
                     </Routes>
                 </Layout>
             </BrowserRouter>
