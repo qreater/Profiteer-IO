@@ -30,7 +30,7 @@ const SalesGraph: React.FC<SalesGraphProps> = ({
     enableToggles,
     salesData,
 }) => {
-    const [showViews, setShowViews] = useState(false)
+    const [showViews, setShowViews] = useState(!enableToggles)
     const [showCarts, setShowCarts] = useState(true)
     const [showPurchases, setShowPurchases] = useState(true)
 
@@ -50,7 +50,9 @@ const SalesGraph: React.FC<SalesGraphProps> = ({
     }
 
     return (
-        <div className="salesgraph">
+        <div
+            className={`salesgraph ${!enableToggles ? 'salesgraph--no-toggle' : ''}`}
+        >
             <div className="salesgraph__content">
                 <ResponsiveContainer>
                     <AreaChart

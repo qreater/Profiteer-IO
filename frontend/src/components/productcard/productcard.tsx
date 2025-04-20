@@ -4,6 +4,8 @@ import { CatalogProduct } from '../../api/hooks/catalog'
 import { convertValueToString } from '../summarycard/summarycard'
 
 import './productcard.styles.css'
+import { isDev } from '../../api/axios'
+import { useNavigate } from 'react-router'
 
 const ProductCard: React.FC<CatalogProduct> = ({
     product_id,
@@ -12,14 +14,19 @@ const ProductCard: React.FC<CatalogProduct> = ({
     average_rating,
     revenue,
 }) => {
+    const navigate = useNavigate()
+
+    const handleClick = () => {
+        navigate(`/prediction/${product_id}`)
+    }
+
     return (
-        <div className="productcard">
+        <div className="productcard" onClick={handleClick}>
             <img
                 src={
-                    import.meta.env.VITE_API_URL +
-                    '/cdn-assets/product/' +
-                    product_id +
-                    '.jpg'
+                    isDev
+                        ? `${import.meta.env.VITE_API_URL}/cdn-assets/product/${product_id}.jpg`
+                        : `/cdn-assets/product/${product_id}.jpg`
                 }
                 alt={product_name}
                 className="productcard__image"

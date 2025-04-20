@@ -36,7 +36,6 @@ html {
 body {
     height: 100%;
     font-family: var(--font-body);
-    line-height: 1.6;
     background-color: var(--color-background);
     color: var(--color-base);
 }

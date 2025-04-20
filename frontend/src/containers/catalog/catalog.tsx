@@ -14,7 +14,7 @@ const Catalog: React.FC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setMinDelayDone(true)
-        }, 3000)
+        }, 1500)
         return () => clearTimeout(timer)
     }, [])
 
