@@ -28,7 +28,7 @@ ProfiteerIO is a full-stack, end-to-end e-commerce intelligence platform that em
 
 ## Demo
 
-For a TLDR; demo, check out the [YouTube video](https://www.youtube.com/watch?v=0v1aX2g3x4E) showcasing ProfiteerIO in action.
+For a TLDR; demo, check out the [YouTube video](https://www.youtube.com/watch?v=MTK3gQSxMuU) showcasing ProfiteerIO in action.
 
 ## Introduction
 
@@ -73,7 +73,6 @@ Below is a comprehensive breakdown of how the platform works as well as an archi
 | **MindsDB**         | Connects to PostgreSQL to train and serve machine learning models that forecast purchase volume based on key product features. |
 | **React**  | A user-friendly UI that visualizes dashboards, enables catalog interactions, and supports live predictions using slider inputs. |
 | **NGINX** | Routes incoming requests (via Nginx or other reverse proxy) to backend services and enforces secure access and CORS handling. |
-
 
 ![Architecture](/doc_assets/Architecture.svg)
 
@@ -251,7 +250,7 @@ Create a `.env` file in the `/backend` directory and add the following environme
 ```bash
 MINDSDB_URL=http://localhost:47334
 
-API_KEY: OPEN_SESAME
+API_KEY=OPEN_SESAME
 
 DB_NAME=mindsdb
 DB_USER=mindsdb
@@ -412,14 +411,29 @@ The UI dashboard is built using React and provides a user-friendly interface to 
 
 - **Stock Management**: Integrate stock management features to track inventory levels and optimize stock replenishment based on sales predictions.
 
-- **Broader Catagory Support**: Expand the dataset to include a wider range of product categories and attributes, enhancing the model's predictive capabilities.
+- **Broader Category Support**: Expand the dataset to include a wider range of product categories and attributes, enhancing the model's predictive capabilities.
 
 - **Real-Time Data Ingestion**: Implement near-real-time data ingestion capabilities to ensure that the dataset is always up-to-date with the latest sales data.
 
 - **World Events**: Integrate world events and trends into the dataset to better understand their impact on sales and consumer behavior.
 
 ## Contributing
-We welcome contributions to this project! If you have any suggestions or improvements, please feel free to open an issue or submit a pull request.
+We welcome contributions to this project! If you have any suggestions or improvements, please feel free to open an issue or submit a pull request. Here are the tools and utilities we used to build this project, and we encourage you to use them as well:
+
+### Tools & Utilities
+
+| CATEGORY         | TOOL                                              |
+|------------------|---------------------------------------------------|
+| Dev Cycle        | GitHub Issues + Pull Requests                   |
+| CI/CD            | GitHub Actions for PR test runs                 |
+| Design           | Figma for UI/UX mockups, logo                    |
+| Frontend Style   | `prettier` & `eslint` for linting and formatting      |
+| Backend Style    | `black` for Python code formatting                |
+| Deployments      | Docker, Kubernetes, Helm                        |
+| Asset Generation | DALL·E for product imagery and creative assets |
+
+>[!TIP]
+> This project adheres to modern developer workflows and automation principles. It includes CI pipelines, standardized formatting tools, and a collaborative GitHub-based review process.
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
