@@ -6,6 +6,7 @@ ProfiteerIO is a full-stack, end-to-end e-commerce intelligence platform that em
 ## Table of Contents
 - [Demo](#demo)
 - [Introduction](#introduction)
+- [Hackathon Win](#hackathon-win)
   - [Screenshots](#screenshots)
 - [Architecture](#architecture)
   - [Core Services & Responsibilities](#core-services--responsibilities)
@@ -42,6 +43,10 @@ With **ProfiteerIO**, you can:
 - Harness the power of AI by training models to predict purchase volumes based on product attributes and pricing strategies with MindsDB.
 - Visualize product performance and forecast future sales trends through an intuitive React dashboard.
 - Deploy your entire analytics stack on Kubernetes to any cloud provider (AWS, GCP, Azure) with just a few simple configurations using Helm.
+
+## Hackathon Win
+
+ProfiteerIO was the **1st place winner** of the [Airbyte+MindsDB Hackathon](https://airbyte.com/blog/winner-of-the-airbyte-mindsdb-hackathon). The project was recognized for its innovative use of Airbyte and MindsDB to create a full-stack e-commerce intelligence platform.
 
 ### Screenshots
 <details>
